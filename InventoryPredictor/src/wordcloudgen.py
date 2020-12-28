@@ -14,7 +14,7 @@ ex = Expenses.get_instance()
 htmlTemplate = '<!DOCTYPE html>' \
                '<html lang="en">' \
                '    <head>' \
-               '        <title>Kiran Gosu</title>' \
+               '        <title>Help me Shop!</title>' \
                '        <meta charset="UTF-8">     ' \
                '        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"> ' \
                '        <style>' \
@@ -238,11 +238,10 @@ def make_wordcloud():
     low = [x.lower() for x in low]
 
     wc = WordCloud(background_color='black',
-                             font_path='Comic Sans MS',
-                             width=600,
-                             height=1500,
-                             collocations=True,
-                             max_font_size=90).generate(text.lower())
+                   width=600,
+                   height=1500,
+                   collocations=True,
+                   max_font_size=90).generate(text.lower())
 
     color_to_words = {'#FFFF00': high,
                       '#FF0000': med,

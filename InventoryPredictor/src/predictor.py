@@ -18,7 +18,7 @@ import os
 htmlTemplate = '<!DOCTYPE html>' \
                '<html lang="en">' \
                '    <head>' \
-               '        <title>Kiran Gosu</title>' \
+               '        <title>Help me Shop!</title>' \
                '        <meta charset="UTF-8">     ' \
                '        <meta http-equiv="X-UA-Compatible" content="IE=Edge">' \
                '        <meta name="description" content="">' \

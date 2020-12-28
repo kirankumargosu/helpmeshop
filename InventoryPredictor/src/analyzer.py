@@ -22,7 +22,7 @@ cfg = Config.get_instance()
 htmlTemplate = '<!DOCTYPE html>' \
                '<html lang="en">' \
                '    <head>' \
-               '        <title>Kiran Gosu</title>' \
+               '        <title>Help me Shop!</title>' \
                '        <meta charset="UTF-8">     ' \
                '        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"> ' \
                '        <style>' \
