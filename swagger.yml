@@ -1,0 +1,270 @@
+swagger: "2.0"
+info:
+  description: This is the swagger file that goes with our server code
+  version: "1.0.0"
+  title: Swagger ReST Article
+consumes:
+  - application/json
+produces:
+  - text/html
+
+basePath: /
+
+# Paths supported by the server application
+paths:
+  /r/:
+    get:
+      operationId: InventoryPredictor.src.predictor.read_data
+      tags:
+        - Readdata
+      summary: Reads the expenses data again
+      description: Reads the expenses data again
+      responses:
+        200:
+          description: Successfully read the data
+          schema:
+            properties:
+              date:
+                type: string
+              description:
+                type: string
+              category:
+                type: string
+              amount:
+                type: string
+
+  /wc/:
+    get:
+      operationId: InventoryPredictor.src.wordcloudgen.main
+      tags:
+        - WordCloud
+      summary: Gets the wordcloud
+      description: Displays the default wordcloud
+      responses:
+        200:
+          description: Successfully generated the wordcloud
+          schema:
+            properties:
+              date:
+                type: string
+              description:
+                type: string
+              category:
+                type: string
+              amount:
+                type: string
+
+  /u/:
+    get:
+      operationId: InventoryPredictor.src.analyzer.usage
+      tags:
+        - Analyzer
+      summary: Gets the usage history
+      description: Determine the purchased list
+      responses:
+        200:
+          description: Successfully returned the purchased list
+          schema:
+            properties:
+              date:
+                type: string
+              description:
+                type: string
+              category:
+                type: string
+              amount:
+                type: string
+
+  /u/s/{shop}/:
+    get:
+      operationId: InventoryPredictor.src.analyzer.usage_shop
+      tags:
+        - Analyzer
+      summary: Gets the usage history of a shop
+      description: Determine the purchased list for the shop name
+      parameters:
+        - name: shop
+          in: path
+          description: Name of the shop for which the purchased list has to be fetched
+          type: string
+          required: True
+      responses:
+        200:
+          description: Successfully returned the purchased list of the given shop
+          schema:
+            properties:
+              date:
+                type: string
+              description:
+                type: string
+              category:
+                type: string
+              amount:
+                type: string
+
+  /u/s/{shop}/{item}:
+    get:
+      operationId: InventoryPredictor.src.analyzer.usage_shop_item
+      tags:
+        - Analyzer
+      summary: Gets the usage history of a shop/item
+      description: Determine the purchased shop/item list for the shop name
+      parameters:
+        - name: shop
+          in: path
+          description: Name of the shop for which the purchased list has to be fetched
+          type: string
+          required: True
+        - name: item
+          in: path
+          description: Name of the shop/item for which the purchased list has to be fetched
+          type: string
+          required: True
+      responses:
+        200:
+          description: Successfully returned the purchased list of the given shop/item
+          schema:
+            properties:
+              date:
+                type: string
+              description:
+                type: string
+              category:
+                type: string
+              amount:
+                type: string
+
+  /u/i/{item}:
+    get:
+      operationId: InventoryPredictor.src.analyzer.usage_item
+      tags:
+        - Analyzer
+      summary: Gets the usage history of an item
+      description: Determine the purchased item list
+      parameters:
+        - name: item
+          in: path
+          description: Name of the item for which the purchased list has to be fetched
+          type: string
+          required: True
+      responses:
+        200:
+          description: Successfully returned the purchased list of the given item
+          schema:
+            properties:
+              date:
+                type: string
+              description:
+                type: string
+              category:
+                type: string
+              amount:
+                type: string
+
+  /p/:
+    get:
+      operationId: InventoryPredictor.src.analyzer.predict
+      tags:
+        - Analyzer
+      summary: Gets the usage history
+      description: Determine the purchased list
+      responses:
+        200:
+          description: Successfully returned the purchased list
+          schema:
+            properties:
+              date:
+                type: string
+              description:
+                type: string
+              category:
+                type: string
+              amount:
+                type: string
+
+  /p/s/{shop}/:
+    get:
+      operationId: InventoryPredictor.src.analyzer.predict_shop
+      tags:
+        - Analyzer
+      summary: Gets the usage history of a shop
+      description: Determine the purchased list for the shop name
+      parameters:
+        - name: shop
+          in: path
+          description: Name of the shop for which the purchased list has to be fetched
+          type: string
+          required: True
+      responses:
+        200:
+          description: Successfully returned the purchased list of the given shop
+          schema:
+            properties:
+              date:
+                type: string
+              description:
+                type: string
+              category:
+                type: string
+              amount:
+                type: string
+
+  /p/s/{shop}/{item}:
+    get:
+      operationId: InventoryPredictor.src.analyzer.predict_shop_item
+      tags:
+        - Analyzer
+      summary: Gets the usage history of a shop/item
+      description: Determine the purchased shop/item list for the shop name
+      parameters:
+        - name: shop
+          in: path
+          description: Name of the shop for which the purchased list has to be fetched
+          type: string
+          required: True
+        - name: item
+          in: path
+          description: Name of the shop/item for which the purchased list has to be fetched
+          type: string
+          required: True
+      responses:
+        200:
+          description: Successfully returned the purchased list of the given shop/item
+          schema:
+            properties:
+              date:
+                type: string
+              description:
+                type: string
+              category:
+                type: string
+              amount:
+                type: string
+
+  /p/i/{item}:
+    get:
+      operationId: InventoryPredictor.src.analyzer.predict_item
+      tags:
+        - Analyzer
+      summary: Gets the usage history of an item
+      description: Determine the purchased item list
+      parameters:
+        - name: item
+          in: path
+          description: Name of the item for which the purchased list has to be fetched
+          type: string
+          required: True
+      responses:
+        200:
+          description: Successfully returned the purchased list of the given item
+          schema:
+            properties:
+              date:
+                type: string
+              description:
+                type: string
+              category:
+                type: string
+              amount:
+                type: string
+
