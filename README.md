@@ -14,7 +14,7 @@ The prerequisite is that all the recursive purchases are recorded into a Google 
 # Modules
 ```
 - Authenticator Package - for OAuth Authentication
-- InventorAPI Package - currently only a placeholder
+- InventoryAPI Package - currently only a placeholder
 - InventoryPredictor Package - for Reading data and predicting
 - config folder - Maintains the configuration
 - static - contains html static files
