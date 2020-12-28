@@ -1,4 +1,4 @@
-# Shopping On the Go
+# Help me Shop!
 ```
 - Authenticator Package - for OAuth Authentication
 - InventorAPI Package - currently only a placeholder
