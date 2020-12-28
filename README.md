@@ -1,4 +1,13 @@
 # Help me Shop!
+With Help me Shop!, you will never miss anything from shopping again. Help me Shop! reads your expenses sheet (from Google) and predicts your next shopping list.
+
+# How it works
+The prerequisite is that all the recursive purchases are recorded into a Google spreadsheet. Help me Shop! reads your existing purchase list and applies a certain degree of Machine Learning and predicts the next shopping list. 
+
+# How it looks
+
+
+# Modules
 ```
 - Authenticator Package - for OAuth Authentication
 - InventorAPI Package - currently only a placeholder
@@ -12,7 +21,7 @@
 - runtime.txt - Python runtime.
 - swagger.yml - for configuring the end points.
 ```
-# How to configure your env:
+# How to configure your env
 ```
 1. Install Python from here - https://www.python.org/downloads/
 2. Install a Python editor. PyCharm or VSCode. I used PyCharm.
