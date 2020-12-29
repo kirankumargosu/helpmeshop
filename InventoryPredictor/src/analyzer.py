@@ -11,6 +11,7 @@ import os
 from flask import make_response, abort
 from Authenticator.src.decorator import login_required, is_valid_user
 from InventoryPredictor.src.expenses import Expenses
+from InventoryPredictor.src.predictor import Predictor
 
 
 def get_timestamp():
@@ -52,7 +53,7 @@ htmlTemplate = '<!DOCTYPE html>' \
                '                }' \
                '            .column {' \
                '                float: left;' \
-               '                width: 20%;' \
+               '                width: 16%;' \
                '                padding: 5px;' \
                '            }' \
                '            /* Clearfix (clear floats) */' \
@@ -139,6 +140,11 @@ htmlTemplate = '<!DOCTYPE html>' \
                '                        </a>' \
                '                    </div>' \
                '                    <div class="column">' \
+               '                        <a href = "https://github.com/kirankumargosu/helpmeshop/">' \
+               '                            <img src="/static/images/forkme.png", height="50"/>' \
+               '                        </a>' \
+               '                    </div>' \
+               '                    <div class="column">' \
                '                        <a href = "/logout/">' \
                '                            <img src="/static/images/logout.png", height="50"/>' \
                '                        </a>' \
@@ -149,28 +155,8 @@ htmlTemplate = '<!DOCTYPE html>' \
                '    </body>' \
                '</html>'
 
-# Data to serve with our API
-PEOPLE = {
-    "Farrell": {
-        "fname": "Doug",
-        "lname": "Farrell",
-        "timestamp": get_timestamp(),
-    },
-    "Brockman": {
-        "fname": "Kent",
-        "lname": "Brockman",
-        "timestamp": get_timestamp(),
-    },
-    "Easter": {
-        "fname": "Bunny",
-        "lname": "Easter",
-        "timestamp": get_timestamp(),
-    },
-}
-
 
 def curate_result(dataFrame, processType='usage', shop='', item=''):
-    # print(dataFrame.columns)
     if processType == 'predict':
         dataFrame['DueDate'] = dataFrame.apply(lambda row: dt.strptime(row['DueDate'], '%Y%m%d').strftime('%d-%b-%Y'),
                                                axis=1)
@@ -208,7 +194,6 @@ def curate_result(dataFrame, processType='usage', shop='', item=''):
 
 def filter_predict_window(dataFrame):
     dataFrame.dropna(inplace=True)
-    # print(dataFrame[dataFrame['Description'] == 'Spinach'])
     predictWindowStart = cfg.predictWindowStart if os.environ.get('PREDICT_WINDOW_START') is None \
         else os.environ.get('PREDICT_WINDOW_START')
     predictWindowEnd = cfg.predictWindowEnd if os.environ.get('PREDICT_WINDOW_END') is None \
@@ -234,6 +219,9 @@ def filter_predict_window(dataFrame):
 @is_valid_user
 def usage():
     expenses = Expenses.get_instance()
+    if expenses.data is None:
+        predictor = Predictor.get_instance()
+        predictor.read_data()
     # shopData.sort_values(by=['iDate'], ascending=False, inplace=True)
     result = expenses.data[['Date', 'Description', 'Category', 'Amount', 'Where']]
     return curate_result(result, processType='usage')
@@ -243,6 +231,9 @@ def usage():
 @is_valid_user
 def usage_shop(shop):
     expenses = Expenses.get_instance()
+    if expenses.data is None:
+        predictor = Predictor.get_instance()
+        predictor.read_data()
     shopData = expenses.data[expenses.data['Where'] == shop]
     # shopData.sort_values(by=['iDate'], ascending=False, inplace=True)
     result = shopData[['Date', 'Description', 'Category', 'Amount']]
@@ -253,6 +244,9 @@ def usage_shop(shop):
 @is_valid_user
 def usage_shop_item(shop, item):
     expenses = Expenses.get_instance()
+    if expenses.data is None:
+        predictor = Predictor.get_instance()
+        predictor.read_data()
     shopData = expenses.data[(expenses.data['Where'] == shop) & (expenses.data['Description'] == item)]
     # print(shopData)
     # shopData.sort_values(by=['iDate'], ascending=False, inplace=True)
@@ -264,8 +258,12 @@ def usage_shop_item(shop, item):
 @is_valid_user
 def usage_item(item):
     expenses = Expenses.get_instance()
+    if expenses.data is None:
+        predictor = Predictor.get_instance()
+        predictor.read_data()
     shopData = expenses.data[(expenses.data['Description'] == item)]
     result = shopData[['Date', 'Description', 'Where', 'Category', 'Amount']]
+    # result.sort_values(by='Date', ascending=False)
     return curate_result(result, item=item, processType='usage')
 
 
@@ -273,6 +271,9 @@ def usage_item(item):
 @is_valid_user
 def predict():
     expenses = Expenses.get_instance()
+    if expenses.data is None:
+        predictor = Predictor.get_instance()
+        predictor.read_data()
     filteredData = filter_predict_window(expenses.data)
     result = filteredData[['Description', 'DueDate', 'Where']]
     return curate_result(result, processType='predict')
@@ -282,6 +283,9 @@ def predict():
 @is_valid_user
 def predict_shop(shop):
     expenses = Expenses.get_instance()
+    if expenses.data is None:
+        predictor = Predictor.get_instance()
+        predictor.read_data()
     shopData = expenses.data[(expenses.data['Where'] == shop)]
     filteredData = filter_predict_window(shopData)
     # print(filteredData)
@@ -293,6 +297,9 @@ def predict_shop(shop):
 @is_valid_user
 def predict_shop_item(shop, item):
     expenses = Expenses.get_instance()
+    if expenses.data is None:
+        predictor = Predictor.get_instance()
+        predictor.read_data()
     shopData = expenses.data[(expenses.data['Where'] == shop) & (expenses.data['Description'] == item)]
     filteredData = filter_predict_window(shopData)
     result = filteredData[['Description', 'DueDate']]
@@ -303,118 +310,10 @@ def predict_shop_item(shop, item):
 @is_valid_user
 def predict_item(item):
     expenses = Expenses.get_instance()
+    if expenses.data is None:
+        predictor = Predictor.get_instance()
+        predictor.read_data()
     shopData = expenses.data[(expenses.data['Description'] == item)]
     filteredData = filter_predict_window(shopData)
     result = filteredData[['Description', 'DueDate']]
     return curate_result(result, item=item, processType='predict')
-
-
-def matha():
-    expenses = Expenses.get_instance()
-    data = expenses.data
-    return None
-
-
-def read_all():
-    """
-    This function responds to a request for /api/people
-    with the complete lists of people
-
-    :return:        json string of list of people
-    """
-    # Create the list of people from our data
-    return [PEOPLE[key] for key in sorted(PEOPLE.keys())]
-
-
-def read_one(lname):
-    """
-    This function responds to a request for /api/people/{lname}
-    with one matching person from people
-
-    :param lname:   last name of person to find
-    :return:        person matching last name
-    """
-    # Does the person exist in people?
-    if lname in PEOPLE:
-        person = PEOPLE.get(lname)
-
-    # otherwise, nope, not found
-    else:
-        abort(
-            404, "Person with last name {lname} not found".format(lname=lname)
-        )
-
-    return person
-
-
-def create(person):
-    """
-    This function creates a new person in the people structure
-    based on the passed in person data
-
-    :param person:  person to create in people structure
-    :return:        201 on success, 406 on person exists
-    """
-    lname = person.get("lname", None)
-    fname = person.get("fname", None)
-
-    # Does the person exist already?
-    if lname not in PEOPLE and lname is not None:
-        PEOPLE[lname] = {
-            "lname": lname,
-            "fname": fname,
-            "timestamp": get_timestamp(),
-        }
-        return make_response(
-            "{lname} successfully created".format(lname=lname), 201
-        )
-
-    # Otherwise, they exist, that's an error
-    else:
-        abort(
-            406,
-            "Person with last name {lname} already exists".format(lname=lname),
-        )
-
-
-def update(lname, person):
-    """
-    This function updates an existing person in the people structure
-
-    :param lname:   last name of person to update in the people structure
-    :param person:  person to update
-    :return:        updated person structure
-    """
-    # Does the person exist in people?
-    if lname in PEOPLE:
-        PEOPLE[lname]["fname"] = person.get("fname")
-        PEOPLE[lname]["timestamp"] = get_timestamp()
-
-        return PEOPLE[lname]
-
-    # otherwise, nope, that's an error
-    else:
-        abort(
-            404, "Person with last name {lname} not found".format(lname=lname)
-        )
-
-
-def delete(lname):
-    """
-    This function deletes a person from the people structure
-
-    :param lname:   last name of person to delete
-    :return:        200 on successful delete, 404 if not found
-    """
-    # Does the person to delete exist?
-    if lname in PEOPLE:
-        del PEOPLE[lname]
-        return make_response(
-            "{lname} successfully deleted".format(lname=lname), 200
-        )
-
-    # Otherwise, nope, person to delete not found
-    else:
-        abort(
-            404, "Person with last name {lname} not found".format(lname=lname)
-        )

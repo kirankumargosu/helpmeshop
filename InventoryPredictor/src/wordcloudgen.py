@@ -44,7 +44,7 @@ htmlTemplate = '<!DOCTYPE html>' \
                '                }' \
                '            .column {' \
                '                float: left;' \
-               '                width: 20%;' \
+               '                width: 16%;' \
                '                padding: 5px;' \
                '            }' \
                '            /* Clearfix (clear floats) */' \
@@ -108,6 +108,11 @@ htmlTemplate = '<!DOCTYPE html>' \
                '                    <div class="column">' \
                '                        <a href = "/r/">' \
                '                            <img src="/static/images/settings.png", height="50"/>' \
+               '                        </a>' \
+               '                    </div>' \
+               '                    <div class="column">' \
+               '                        <a href = "https://github.com/kirankumargosu/helpmeshop/">' \
+               '                            <img src="/static/images/forkme.png", height="50"/>' \
                '                        </a>' \
                '                    </div>' \
                '                    <div class="column">' \

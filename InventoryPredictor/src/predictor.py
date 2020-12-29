@@ -15,46 +15,10 @@ from Authenticator.src.decorator import login_required, is_valid_user
 from flask import redirect
 import os
 
-htmlTemplate = '<!DOCTYPE html>' \
-               '<html lang="en">' \
-               '    <head>' \
-               '        <title>Help me Shop!</title>' \
-               '        <meta charset="UTF-8">     ' \
-               '        <meta http-equiv="X-UA-Compatible" content="IE=Edge">' \
-               '        <meta name="description" content="">' \
-               '        <meta name="keywords" content="">' \
-               '        <meta name="team" content="">' \
-               '        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"> ' \
-               '        <style>' \
-               '            img {' \
-               '                display: block;' \
-               '                margin-left: auto;' \
-               '                margin-right: auto;' \
-               '                }' \
-               '            body {' \
-               '                background-color: #404040;' \
-               '                font-family: "Helvetica Neue";Helvetica;Arial;sans - serif' \
-               '                }' \
-               '        </style>' \
-               '    </head>' \
-               '    <body>' \
-               '    <br>' \
-               '    <h4 align="center"; style="color:#cccccc"> @@Header@@ </h4>' \
-               '</html>'
-
 warnings.filterwarnings("ignore")
 
 
-# def fit_model(amount, usageIndex):
-#     model = LinearRegression().fit(amount, usageIndex)
-#     return model.intercept_, model.coef_
-
 def fit_model(data):
-    # print(type(data))
-    description = data['Description'].unique()
-    # print(description)
-    # data.dropna(inplace=True)
-    # print(data)
     trainData = data[data['UsageIndex'] != -999]
     testData = data[data['UsageIndex'] == -999]
     XTrain = trainData['Amount'].values.reshape((-1, 1))
@@ -64,9 +28,6 @@ def fit_model(data):
     if len(XTrain) > 0 and len(yTrain) > 0:
         model = LinearRegression().fit(XTrain, yTrain)
         prediction = model.predict(XTest)
-        # print(prediction[0])
-        # print('Description = {} : Intercept = {} and Coef = {}, prediction = {} for XTest = {}'.format(
-        #     description[0], model.intercept_, model.coef_[0], prediction[0], XTest))
         return model.intercept_, model.coef_[0], prediction[0]
 
 
@@ -77,7 +38,6 @@ def read_data():
     predictor.read_data()
     expenses = Expenses.get_instance()
     expenses.wordCloud = None
-    # return htmlTemplate.replace('@@Header@@', 'Successfully read the data')
     return redirect('/wc/')
 
 
@@ -150,8 +110,6 @@ class Predictor:
         # for each of these descriptionGroups, fetch y-Intercept and Slope using LinearRegression
         modelValues = {description: fit_model(descriptionGroupMap[description])
                        for description in descriptionGroupMap}
-        # print('Printing Model values ****')
-        # print(modelValues['Rent'])
 
         # merge the y-Intercept and slope into the dataframe.
         # curatedData['Intercept'] = curatedData.apply(lambda row:
@@ -184,18 +142,7 @@ class Predictor:
                                                        '%Y%m%d'),
                                                    axis=1)
 
-        # print(len(curatedData))]
-        # test = curatedData[curatedData['Where'] == 'Coop']
-        # test.to_csv(self.cfg.cacheDirectory + 'test.csv')
-        curatedData.to_csv(self.cfg.cacheDirectory + 'curatedData.csv')
-        # predictCandidates = curatedData[curatedData['UsageIndex'] == -999]
-        # print(predictCandidates)
         self.expenses.data = curatedData
-        # a = (curatedData[['Amount', 'UsageIndex']] for curatedData['Description'])
-        # print(curatedData.groupby('Description')[['Amount', 'UsageIndex']])
-        # self.run_prediction_shop('Matha', 20200101)
-        self.run_prediction_shop('Matha', 20200701)
-        # self.run_prediction_shop('Matha')
 
     def run_prediction_shop(self, shopName, fromDate=None):
         if self.expenses.data is None:

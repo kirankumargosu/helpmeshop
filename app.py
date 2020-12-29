@@ -11,7 +11,9 @@ from authlib.integrations.flask_client import OAuth
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
+from InventoryPredictor.src.htmlhelper import HtmlHelper as hh
 
+htmlHelper = hh.get_instance()
 # Create the application instance
 app = connexion.FlaskApp(__name__, specification_dir='./')
 
@@ -24,9 +26,6 @@ app.app.secret_key = os.getenv('APP_SECRET_KEY')
 
 app.app.config['SESSION_COOKIE_NAME'] = 'google-login-session'
 app.app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=5)
-# print(os.getenv('GOOGLE_CLIENT_ID'))
-# print(os.getenv('GOOGLE_CLIENT_SECRET'))
-# print(os.getenv('APP_SECRET_KEY'))
 
 # oAuth Setup
 oauth = OAuth(app.app)
@@ -45,68 +44,61 @@ google = oauth.register(
 )
 
 
-# predictor = Predictor.get_instance()
-# predictor.read_data()
-
-
-# wc.make_wordcloud()
-
 # Create a URL route in our application for "/"
 @app.route('/')
-# @login_required
 def home():
     """
     This function just responds to the browser ULR
     localhost:5000/
     :return:        the rendered template 'home.html'
     """
-    f = open('./templates/home.html', 'r')
-    html = f.read()
     if 'profile' in dict(session):
         email = dict(session)['profile']['email']
         name = dict(session)['profile']['given_name']
-        print(dict(session)['profile'])
-        print('home/ {}'.format(email))
+        # print(dict(session)['profile'])
+        # print('home/ {}'.format(email))
         validEmails = os.environ.get('VALID_EMAILS')
         validEmailList = [x.strip() for x in validEmails.lstrip(',').rstrip(',').split(',')]
         if email in validEmailList:
-            welcomeMsg = '<h1> Welcome, {}! </h1>' \
-                         '<div class="row">' \
-                         '<div class="column"><a href = "/wc/"><img src="/static/images/home.png", height="50"/>' \
-                         '</a></div>' \
-                         '<div class="column"><a href = "/u/s/Tesco/"><img src="/static/images/usage.png", ' \
-                         'height="50"/>' \
-                         '</a></div>' \
-                         '<div class="column"><a href = "/p/s/Tesco/"><img src="/static/images/predict.png", ' \
-                         'height="50"/>' \
-                         '</a></div>' \
-                         '<div class="column"><a href = "/r/"><img src="/static/images/settings.png", height="50"/>' \
-                         '</a></div>' \
-                         '<div class="column"><a href = "/logout/"><img src="/static/images/logout.png", ' \
-                         'height="50"/>' \
-                         '</a></div>' \
-                         '</div>'.format(name)
-            iconPercentage = '20%'
+            html = htmlHelper.get_html(page='home', userName=name)
+            # welcomeMsg = '<h1> Welcome, {}! </h1>' \
+            #              '<div class="row">' \
+            #              '<div class="column"><a href = "/wc/"><img src="/static/images/home.png", height="50"/>' \
+            #              '</a></div>' \
+            #              '<div class="column"><a href = "/u/s/Tesco/"><img src="/static/images/usage.png", ' \
+            #              'height="50"/>' \
+            #              '</a></div>' \
+            #              '<div class="column"><a href = "/p/s/Tesco/"><img src="/static/images/predict.png", ' \
+            #              'height="50"/>' \
+            #              '</a></div>' \
+            #              '<div class="column"><a href = "/r/"><img src="/static/images/settings.png", height="50"/>' \
+            #              '</a></div>' \
+            #              '<div class="column"><a href = "/logout/"><img src="/static/images/logout.png", ' \
+            #              'height="50"/>' \
+            #              '</a></div>' \
+            #              '</div>'.format(name)
+            # iconPercentage = '20%'
         else:
-            welcomeMsg = '<h1> Welcome, {}! </h1> <h2> You do not have access to the app.</h2>' \
-                         '<div class="row">' \
-                         '<div class="column"><a href = "https://github.com/kirankumargosu/helpmeshop"><img ' \
-                         'src="/static/images/forkme.png", height="50"/>' \
-                         '</a></div>' \
-                         '<div class="column"><a href = "/logout/"><img src="/static/images/logout.png", ' \
-                         'height="50"/>' \
-                         '</a></div>' \
-                         '</div>'.format(name)
-            iconPercentage = '50%'
+            html = htmlHelper.get_html(page='home', userName=name, isActiveUser=False)
+            # welcomeMsg = '<h1> Welcome, {}! </h1> <h2> You do not have access to the app.</h2>' \
+            #              '<div class="row">' \
+            #              '<div class="column"><a href = "https://github.com/kirankumargosu/helpmeshop"><img ' \
+            #              'src="/static/images/forkme.png", height="50"/>' \
+            #              '</a></div>' \
+            #              '<div class="column"><a href = "/logout/"><img src="/static/images/logout.png", ' \
+            #              'height="50"/>' \
+            #              '</a></div>' \
+            #              '</div>'.format(name)
+            # iconPercentage = '50%'
 
-        html = html.replace('@@iconPercentage@@', iconPercentage).replace('@@header@@', welcomeMsg)
+        # html = html.replace('@@iconPercentage@@', iconPercentage).replace('@@header@@', welcomeMsg)
     else:
         # print('replacing @@header@@')
         # print(html)
-        html = html.replace('@@header@@',
-                            '<a href="/login"><img src = "/static/images/google_login_white.png" height = "70"> </a>')
+        html = htmlHelper.get_html(page='home', userName=None)
+        # html = html.replace('@@header@@',
+        #                     '<a href="/login"><img src = "/static/images/google_login_white.png" height = "70"> </a>')
         # print(html)
-    # return render_template('home.html')
     return html
 
 
@@ -137,30 +129,6 @@ def logout():
     for key in list(session.keys()):
         session.pop(key)
     return redirect('/')
-
-
-# Option 1
-# background process happening without any refreshing
-@app.route('/background_process_test')
-def background_process_test():
-    print("Hello")
-    return ("nothing")
-
-
-# Option 2
-@app.route("/forward/", methods=['POST'])
-def move_forward():
-    # Moving forward code
-    forward_message = "Moving Forward..."
-    return render_template('home.html', forward_message=forward_message);
-
-
-# Option 3
-@app.route('/SomeFunction')
-def SomeFunction():
-    print('In SomeFunction')
-    return "Nothing"
-
 
 # If we're running in stand alone mode, run the application
 if __name__ == '__main__':
