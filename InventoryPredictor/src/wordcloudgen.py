@@ -210,21 +210,11 @@ def fig_to_base64(fig):
 
 
 def make_wordcloud():
-    # print(ex.data[ex.data['Category'] != 'Utilities']['Description'].value_counts())
-    stopCategories = ['Utilities', 'Transportation', 'TV/Movies', 'School/Clubs', 'Household', 'Clothing', 'Haircuts',
-                      'Delivery Cost', 'Others', 'Gifts for Others', 'Gifts', 'Eat Outs', 'Rent']
     stopCategories = os.environ.get('STOP_CATEGORIES_FROM_CLOUD')
-    # if validEmails is None:
-    #     validEmails = 'kirankumar.gosu@gmail.com'
+    if stopCategories is None:
+        stopCategories = 'Utilities, Rent, Others'
     stopCategoriesList = [x.strip() for x in stopCategories.lstrip(',').rstrip(',').split(',')]
-    # print(stopCategoriesList)
     description = ex.data[~ex.data['Category'].isin(stopCategoriesList)]['Description'].value_counts()
-    # print(description)
-    # print(description.index.tolist())
-    # descriptionList = ex.data['Description'].to_list()
-    # descriptionList = description.index.tolist()
-    # print(descriptionList)
-    # text = '\t'.join([str(elem) for elem in descriptionList.index.tolist()])
     text = '\t'.join([str(elem) for elem
                       in ex.data[~ex.data['Category'].isin(stopCategoriesList)]['Description'].to_list()])
 

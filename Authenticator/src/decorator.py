@@ -21,14 +21,10 @@ def is_valid_user(f):
     def decorated_function(*args, **kwargs):
         user = dict(session).get('profile', None)
         validEmails = os.environ.get('VALID_EMAILS')
-        # if validEmails is None:
-        #     validEmails = 'kirankumar.gosu@gmail.com'
         validEmailList = [x.strip() for x in validEmails.lstrip(',').rstrip(',').split(',')]
         # print('is_valid_user {}'.format(user))
         if user is not None:
             if user['email'] in validEmailList:
-                # print(user['email'])
-                # print(validEmailList)
                 return f(*args, **kwargs)
         return redirect('/')
 

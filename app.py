@@ -60,38 +60,51 @@ def home():
     localhost:5000/
     :return:        the rendered template 'home.html'
     """
-    # print(session)
-    # print(len(session))
-    # print(type(session))
-    # print(dict(session).keys())
-    # print(len(dict(session)))
-    # print(type(dict(session)))
     f = open('./templates/home.html', 'r')
     html = f.read()
     if 'profile' in dict(session):
         email = dict(session)['profile']['email']
         name = dict(session)['profile']['given_name']
-        # print(dict(session)['profile'])
-        # print('home/ {}'.format(email))
-        iconMsg = '<h1> Welcome, {}! </h1>' \
-                  '<div class="row">' \
-                  '<div class="column"><a href = "/wc/"><img src="./static/images/home.png", height="50"/>' \
-                  '</a></div>' \
-                  '    <div class="column"><a href = "/u/s/Tesco/"><img src="./static/images/usage.png", height="50"/>' \
-                  '</a></div>' \
-                  '<div class="column"><a href = "/p/s/Tesco/"><img src="./static/images/predict.png", height="50"/>' \
-                  '</a></div>' \
-                  '    <div class="column"><a href = "/r/"><img src="./static/images/settings.png", height="50"/>' \
-                  '</a></div>' \
-                  '    <div class="column"><a href = "/logout/"><img src="./static/images/logout.png", height="50"/>' \
-                  '</a></div>' \
-                  '</div>'.format(name)
-        html = html.replace('@@header@@', iconMsg)
+        print(dict(session)['profile'])
+        print('home/ {}'.format(email))
+        validEmails = os.environ.get('VALID_EMAILS')
+        validEmailList = [x.strip() for x in validEmails.lstrip(',').rstrip(',').split(',')]
+        if email in validEmailList:
+            welcomeMsg = '<h1> Welcome, {}! </h1>' \
+                         '<div class="row">' \
+                         '<div class="column"><a href = "/wc/"><img src="/static/images/home.png", height="50"/>' \
+                         '</a></div>' \
+                         '<div class="column"><a href = "/u/s/Tesco/"><img src="/static/images/usage.png", ' \
+                         'height="50"/>' \
+                         '</a></div>' \
+                         '<div class="column"><a href = "/p/s/Tesco/"><img src="/static/images/predict.png", ' \
+                         'height="50"/>' \
+                         '</a></div>' \
+                         '<div class="column"><a href = "/r/"><img src="/static/images/settings.png", height="50"/>' \
+                         '</a></div>' \
+                         '<div class="column"><a href = "/logout/"><img src="/static/images/logout.png", ' \
+                         'height="50"/>' \
+                         '</a></div>' \
+                         '</div>'.format(name)
+            iconPercentage = '20%'
+        else:
+            welcomeMsg = '<h1> Welcome, {}! </h1> <h2> You do not have access to the app.</h2>' \
+                         '<div class="row">' \
+                         '<div class="column"><a href = "https://github.com/kirankumargosu/helpmeshop"><img ' \
+                         'src="/static/images/forkme.png", height="50"/>' \
+                         '</a></div>' \
+                         '<div class="column"><a href = "/logout/"><img src="/static/images/logout.png", ' \
+                         'height="50"/>' \
+                         '</a></div>' \
+                         '</div>'.format(name)
+            iconPercentage = '50%'
+
+        html = html.replace('@@iconPercentage@@', iconPercentage).replace('@@header@@', welcomeMsg)
     else:
         # print('replacing @@header@@')
         # print(html)
         html = html.replace('@@header@@',
-                            '<a href="/login"><img src = "./static/images/google_login_white.png" height = "70"> </a>')
+                            '<a href="/login"><img src = "/static/images/google_login_white.png" height = "70"> </a>')
         # print(html)
     # return render_template('home.html')
     return html
@@ -116,7 +129,7 @@ def authorize():
     session['profile'] = user_info
     session.permanent = True  # make the session permanent so it keeps existing after browser gets closed
 
-    return redirect('/wc/')
+    return redirect('/')
 
 
 @app.route('/logout/')
