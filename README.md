@@ -5,12 +5,16 @@ With Help me Shop!, you will never miss anything from shopping again. Help me Sh
 The prerequisite is that all the recursive purchases are recorded into a Google spreadsheet. Help me Shop! reads your existing purchase list and applies a certain degree of Machine Learning and predicts the next shopping list. 
 
 # How it looks
-
+<p align="center">
+  <img src="screenshots/Login.PNG" width="250" title="hover text">
+  <img src="screenshots/WordCloud.PNG" width="250" title="hover text">
+  <img src="screenshots/Prediction.PNG" width="250" title="hover text">
+</p>
 
 # Modules
 ```
 - Authenticator Package - for OAuth Authentication
-- InventorAPI Package - currently only a placeholder
+- InventoryAPI Package - currently only a placeholder
 - InventoryPredictor Package - for Reading data and predicting
 - config folder - Maintains the configuration
 - static - contains html static files
