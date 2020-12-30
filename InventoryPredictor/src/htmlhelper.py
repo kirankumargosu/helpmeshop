@@ -73,12 +73,15 @@ class HtmlHelper:
                 if isActiveUser:
                     return self.__htmlTemplate \
                         .replace('@@iconPercentage@@', '16%') \
-                        .replace('@@header@@', '<h1> Welcome, {}! </h1> {}'.format(userName, iconHtml))
+                        .replace('@@header@@', '<h1> Welcome, {}! </h1>'.format(userName)) \
+                        .replace('@@icons@@', iconHtml)
                 else:
                     return self.__htmlTemplate \
                         .replace('@@iconPercentage@@', '50%') \
-                        .replace('@@header@@', '<h1> Welcome, {}! </h1> {}'.format(userName, iconHtml))
+                        .replace('@@header@@', '<h1> Welcome, {}! </h1> <h2> You do not have access to the app. </h2>'.format(userName))\
+                        .replace('@@icons@@', iconHtml)
             else:
                 return self.__htmlTemplate \
-                    .replace('@@header@@',
+                    .replace('@@header@@', '') \
+                    .replace('@@icons@@',
                              '<a href="/login"><img src = "/static/images/google_login_white.png" height = "70"> </a>')
